@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programme — Advancing Pulsar Science 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg-deep: #06090f; --bg-primary: #0b1120; --bg-card: #111827; --bg-card-hover: #1a2332;
+            --accent: #c9a84c; --accent-dim: #a08030; --accent-glow: rgba(201,168,76,0.12);
+            --text: #e2e8f0; --text-dim: #94a3b8; --text-faint: #64748b;
+            --border: #1e293b; --radius: 10px; --max-w: 900px;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-deep); color: var(--text);
+            line-height: 1.7; -webkit-font-smoothing: antialiased;
+        }
+        ::selection { background: var(--accent); color: var(--bg-deep); }
+        a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: #e2c870; }
+
+        /* Nav */
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(6,9,15,0.88); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-inner {
+            max-width: var(--max-w); margin: 0 auto; padding: 0 2rem;
+            display: flex; align-items: center; justify-content: space-between; height: 56px;
+        }
+        .nav-brand { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 600; color: var(--accent); }
+        .nav-back { font-size: 0.85rem; color: var(--text-dim); font-weight: 500; }
+        .nav-back:hover { color: var(--accent); }
+
+        .container { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+        h1 {
+            font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;
+            color: #fff; margin-bottom: 0.4rem;
+        }
+        .page-subtitle { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 3rem; }
+
+        /* Day blocks */
+        .day-block { margin-bottom: 3rem; }
+        .day-header {
+            display: flex; align-items: center; gap: 1rem; margin-bottom: 0.3rem;
+        }
+        .day-header h2 {
+            font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: #fff;
+        }
+        .day-header .day-date {
+            font-size: 0.78rem; font-weight: 600; color: var(--accent);
+            padding: 0.2rem 0.7rem; border: 1px solid var(--accent-dim); border-radius: 50px;
+        }
+        .day-theme {
+            font-size: 0.85rem; color: var(--text-dim); font-style: italic; margin-bottom: 1.5rem;
+        }
+
+        .schedule-table { width: 100%; border-collapse: collapse; }
+        .schedule-table tr { border-bottom: 1px solid var(--border); }
+        .schedule-table tr:last-child { border-bottom: none; }
+        .schedule-table td { padding: 0.8rem 0; vertical-align: top; }
+        .schedule-table .col-time {
+            width: 120px; font-size: 0.82rem; font-weight: 600; color: var(--accent);
+            white-space: nowrap; padding-right: 1.5rem;
+        }
+        .schedule-table .col-len {
+            width: 60px; font-size: 0.78rem; color: var(--text-faint); white-space: nowrap;
+        }
+        .col-desc h4 { font-size: 0.9rem; font-weight: 600; color: #fff; margin-bottom: 0.15rem; }
+        .col-desc p { font-size: 0.83rem; color: var(--text-dim); }
+        .col-desc em { color: var(--text-dim); }
+
+        .tag {
+            display: inline-block; font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.05em; padding: 0.12rem 0.5rem; border-radius: 3px; margin-right: 0.4rem;
+        }
+        .tag-keynote { background: rgba(201,168,76,0.15); color: var(--accent); }
+        .tag-discussion { background: rgba(59,130,246,0.15); color: #60a5fa; }
+        .tag-breakout { background: rgba(52,211,153,0.15); color: #34d399; }
+        .tag-social { background: rgba(244,114,182,0.15); color: #f472b6; }
+        .tag-interactive { background: rgba(168,85,247,0.15); color: #a78bfa; }
+        .tag-working { background: rgba(251,191,36,0.15); color: #fbbf24; }
+
+        .break-row td { color: var(--text-faint) !important; }
+        .break-row h4 { color: var(--text-faint) !important; font-weight: 400 !important; }
+
+        /* Breakout info */
+        .info-box {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 1.5rem; margin: 2rem 0;
+        }
+        .info-box h3 { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 0.8rem; }
+        .info-box p, .info-box li { font-size: 0.85rem; color: var(--text-dim); line-height: 1.7; }
+        .info-box ul { list-style: none; padding: 0; }
+        .info-box li { padding: 0.3rem 0; }
+        .info-box li::before { content: '→ '; color: var(--accent-dim); }
+
+        .topic-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem;
+        }
+        .topic-card {
+            background: var(--bg-card-hover); border: 1px solid var(--border);
+            border-radius: 8px; padding: 1rem;
+        }
+        .topic-card h4 { font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-bottom: 0.3rem; }
+        .topic-card p { font-size: 0.8rem; color: var(--text-dim); }
+
+        .note {
+            margin-top: 3rem; padding: 1rem 1.4rem;
+            background: var(--bg-card); border-left: 3px solid var(--accent-dim);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-size: 0.85rem; color: var(--text-dim);
+        }
+
+        @media (max-width: 600px) {
+            .col-len { display: none; }
+            .col-time { width: 85px; }
+            .topic-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-brand">Astronomy @ Lorentz 2026</a>
+        <a href="index.html" class="nav-back">&larr; Back to main page</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h1>Detailed Programme</h1>
+    <p class="page-subtitle">18 – 22 May 2026 &middot; Lorentz Center@Omega, Leiden</p>
+
+    <!-- ── DAY 1 ── -->
+    <div class="day-block">
+        <div class="day-header">
+            <h2>Day 1</h2>
+            <span class="day-date">Monday 18 May</span>
+        </div>
+        <p class="day-theme">Opening Day — Setting the Scene</p>
+        <table class="schedule-table">
+            <tr>
+                <td class="col-time">10:00 – 10:25</td>
+                <td class="col-len">25 min</td>
+                <td class="col-desc">
+                    <h4>Welcome &amp; Workshop Overview</h4>
+                    <p>Lorentz Centre introduction (15 min) + workshop goals (Aditya Parthasarathy, 10 min)</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">10:25 – 11:00</td>
+                <td class="col-len">35 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-social">Social</span> Introductory Science Sparklers — Session A</h4>
+                    <p>~30 participants: short ~1-minute introductions — who you are, expertise, what you want from the workshop</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">11:00 – 12:00</td>
+                <td class="col-len">60 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-keynote">Keynote 1</span> PTA / GW Science</h4>
+                    <p><em>The first inroads into the low-frequency gravitational-wave spectrum: Results and Challenges</em><br>Matthew Kerr (40 min talk + 20 min Q&amp;A)</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">12:00 – 13:30</td>
+                <td class="col-len">90 min</td>
+                <td class="col-desc"><h4>Lunch</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">13:30 – 14:30</td>
+                <td class="col-len">60 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-keynote">Keynote 2</span> ISM Propagation</h4>
+                    <p><em>The interstellar medium in space and time: current state-of-the-art in scintillometry and imaging techniques</em><br>Stella Ocker (40 min + 20 min Q&amp;A)</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">14:30 – 15:00</td>
+                <td class="col-len">30 min</td>
+                <td class="col-desc"><h4>Coffee break</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">15:00 – 16:00</td>
+                <td class="col-len">60 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-keynote">Keynote 3</span> VLBI Astrometry</h4>
+                    <p><em>Precision astrometry on compact objects with VLBI and avenues for advancements</em><br>Adam Deller (40 min + 20 min Q&amp;A)</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">16:00 – 16:30</td>
+                <td class="col-len">30 min</td>
+                <td class="col-desc"><h4>Coffee break</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">16:30 – 17:00</td>
+                <td class="col-len">30 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-social">Social</span> Introductory Science Sparklers — Session B</h4>
+                    <p>~25 participants</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">17:00 onward</td>
+                <td class="col-len">—</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-social">Social</span> Welcome Reception</h4>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── DAY 2 ── -->
+    <div class="day-block">
+        <div class="day-header">
+            <h2>Day 2</h2>
+            <span class="day-date">Tuesday 19 May</span>
+        </div>
+        <p class="day-theme">PTA: Challenges &amp; Solutions</p>
+        <table class="schedule-table">
+            <tr>
+                <td class="col-time">10:00 – 10:40</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-keynote">Keynote 1</span></h4>
+                    <p>Daniel Reardon (30 min + 10 min Q&amp;A)</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">10:40 – 11:05</td>
+                <td class="col-len">25 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Plenary Discussion A</h4>
+                    <p>Facilitated: prioritise topics/questions emerging from Keynote 1</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">11:05 – 11:45</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-keynote">Keynote 2</span></h4>
+                    <p><em>Speaker to be confirmed</em></p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">11:45 – 12:00</td>
+                <td class="col-len">15 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Plenary Discussion B</h4>
+                    <p>Finalise shortlist of breakout questions + key ideas</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">12:00 – 13:30</td>
+                <td class="col-len">90 min</td>
+                <td class="col-desc"><h4>Lunch</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">13:30 – 14:15</td>
+                <td class="col-len">45 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-interactive">Interactive</span> PTA Tutorial Session</h4>
+                    <p>"PTA observables → constraints → how they plug into timing"</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">14:15 – 14:35</td>
+                <td class="col-len">20 min</td>
+                <td class="col-desc">
+                    <h4>Breakout Overview &amp; Team Assignment</h4>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">14:35 – 14:55</td>
+                <td class="col-len">20 min</td>
+                <td class="col-desc"><h4>Coffee break</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">14:55 – 15:10</td>
+                <td class="col-len">15 min</td>
+                <td class="col-desc">
+                    <h4>Breakout Setup</h4>
+                    <p>Teams settle, assign roles, review topic cards</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">15:10 – 16:20</td>
+                <td class="col-len">70 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-breakout">Breakout</span> PTA Breakout Sessions</h4>
+                    <p>8 teams of 6–7: one PTA challenge + actionable solution</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">16:20 – 16:40</td>
+                <td class="col-len">20 min</td>
+                <td class="col-desc"><h4>Coffee break + teams finalise output</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">16:40 – 17:20</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Breakout Outcomes</h4>
+                    <p>Moderator synthesis (10 min) + 8 × 3 min team pitches + wrap (6 min)</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">17:20 – 18:00</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Guided Discussion</h4>
+                    <p>All participants: shortlisted topics, define success criteria</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── DAY 3 ── -->
+    <div class="day-block">
+        <div class="day-header">
+            <h2>Day 3</h2>
+            <span class="day-date">Wednesday 20 May</span>
+        </div>
+        <p class="day-theme">ISM: Challenges &amp; Solutions</p>
+        <table class="schedule-table">
+            <tr>
+                <td class="col-time">10:00 – 10:40</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-keynote">Keynote 1</span> Pulsar Scintillometry</h4>
+                    <p><em>Advances in pulsar scintillometry techniques</em> — Tim Sprenger</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">10:40 – 11:05</td>
+                <td class="col-len">25 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Plenary Discussion A</h4>
+                    <p>Prioritise topics emerging from Keynote 1</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">11:05 – 11:45</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-keynote">Keynote 2</span> VLBI Astrometry of Scintillation Screens</h4>
+                    <p><em>High-resolution VLBI astrometry of pulsar scintillation screens</em> — Ashley Stock</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">11:45 – 12:00</td>
+                <td class="col-len">15 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Plenary Discussion B</h4>
+                    <p>Finalise breakout questions + key ideas</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">12:00 – 13:30</td>
+                <td class="col-len">90 min</td>
+                <td class="col-desc"><h4>Lunch</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">13:30 – 14:15</td>
+                <td class="col-len">45 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-interactive">Interactive</span> ISM Tutorial Session</h4>
+                    <p>"ISM observables → constraints → how they plug into timing"</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">14:15 – 14:35</td>
+                <td class="col-len">20 min</td>
+                <td class="col-desc"><h4>Breakout Overview &amp; Team Assignment</h4></td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">14:35 – 14:55</td>
+                <td class="col-len">20 min</td>
+                <td class="col-desc"><h4>Coffee break</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">14:55 – 15:10</td>
+                <td class="col-len">15 min</td>
+                <td class="col-desc">
+                    <h4>Breakout Setup</h4>
+                    <p>Teams settle, assign roles, review topic cards</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">15:10 – 16:20</td>
+                <td class="col-len">70 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-breakout">Breakout</span> ISM Breakout Sessions</h4>
+                    <p>8 teams of 6–7: one ISM challenge + actionable solution</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">16:20 – 16:40</td>
+                <td class="col-len">20 min</td>
+                <td class="col-desc"><h4>Coffee break + teams finalise output</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">16:40 – 17:20</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Breakout Outcomes</h4>
+                    <p>Moderator synthesis + team pitches</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">17:20 – 18:00</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Guided Discussion</h4>
+                    <p>All participants: shortlisted topics, define success criteria</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── DAY 4 ── -->
+    <div class="day-block">
+        <div class="day-header">
+            <h2>Day 4</h2>
+            <span class="day-date">Thursday 21 May</span>
+        </div>
+        <p class="day-theme">VLBI: Challenges &amp; Solutions</p>
+        <table class="schedule-table">
+            <tr>
+                <td class="col-time">10:00 – 10:40</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-keynote">Keynote 1</span></h4>
+                    <p><em>Speaker to be confirmed</em></p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">10:40 – 11:05</td>
+                <td class="col-len">25 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Plenary Discussion A</h4>
+                    <p>Prioritise topics emerging from Keynote 1</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">11:05 – 11:45</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-keynote">Keynote 2</span> The MSPSRpi2 Project</h4>
+                    <p><em>A large-scale astrometric project for millisecond pulsars</em> — Bailee Wolfe</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">11:45 – 12:00</td>
+                <td class="col-len">15 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Plenary Discussion B</h4>
+                    <p>Finalise breakout questions + key ideas</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">12:00 – 13:30</td>
+                <td class="col-len">90 min</td>
+                <td class="col-desc"><h4>Lunch</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">13:30 – 14:15</td>
+                <td class="col-len">45 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-interactive">Interactive</span> VLBI Tutorial Session</h4>
+                    <p>"VLBI observables → constraints → how they plug into timing"</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">14:15 – 14:35</td>
+                <td class="col-len">20 min</td>
+                <td class="col-desc"><h4>Breakout Overview &amp; Team Assignment</h4></td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">14:35 – 14:55</td>
+                <td class="col-len">20 min</td>
+                <td class="col-desc"><h4>Coffee break</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">14:55 – 15:10</td>
+                <td class="col-len">15 min</td>
+                <td class="col-desc">
+                    <h4>Breakout Setup</h4>
+                    <p>Teams settle, assign roles, review topic cards</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">15:10 – 16:20</td>
+                <td class="col-len">70 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-breakout">Breakout</span> VLBI Breakout Sessions</h4>
+                    <p>8 teams of 6–7: one VLBI challenge + actionable solution</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">16:20 – 16:40</td>
+                <td class="col-len">20 min</td>
+                <td class="col-desc"><h4>Coffee break + teams finalise output</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">16:40 – 17:20</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Breakout Outcomes</h4>
+                    <p>Moderator synthesis + team pitches</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-time">17:20 – 18:00</td>
+                <td class="col-len">40 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Guided Discussion</h4>
+                    <p>All participants: shortlisted topics, define success criteria</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── DAY 5 ── -->
+    <div class="day-block">
+        <div class="day-header">
+            <h2>Day 5</h2>
+            <span class="day-date">Friday 22 May</span>
+        </div>
+        <p class="day-theme">Synthesis &amp; Roadmap</p>
+        <table class="schedule-table">
+            <tr>
+                <td class="col-time">10:00 – 12:00</td>
+                <td class="col-len">120 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-working">Working</span> Consolidation Sessions</h4>
+                    <p>Collaboratively draft actionable research plans, grant proposals, and observing strategies based on the week's discussions.</p>
+                </td>
+            </tr>
+            <tr class="break-row">
+                <td class="col-time">12:00 – 13:30</td>
+                <td class="col-len">90 min</td>
+                <td class="col-desc"><h4>Lunch</h4></td>
+            </tr>
+            <tr>
+                <td class="col-time">13:30 – 15:00</td>
+                <td class="col-len">90 min</td>
+                <td class="col-desc">
+                    <h4><span class="tag tag-discussion">Discussion</span> Roadmap &amp; Next Steps</h4>
+                    <p>Culminating in a community roadmap document to guide future collaborative efforts across PTA, ISM, and VLBI communities.</p>
+                </td>
+            </tr>
+        </table>
+        <p class="day-theme" style="margin-top: 1rem; font-style: normal; color: var(--text-faint); font-size: 0.82rem;">Day 5 schedule is preliminary and will be adjusted to accommodate participants who may need to travel.</p>
+    </div>
+
+    <!-- ── Breakout Info ── -->
+    <div class="info-box">
+        <h3>How Breakout Sessions Work</h3>
+        <p>~55 participants split into 8 teams of 6–7, each tackling one challenge with an actionable solution. Each team has a Chair/Timekeeper, Scribe, Reporter, and Skeptic.</p>
+        <p style="margin-top: 0.8rem; font-weight: 500; color: #fff;">70-minute working method:</p>
+        <ul>
+            <li><strong>Problem framing</strong> (10 min) — agree the exact question in one sentence</li>
+            <li><strong>Solution sketch</strong> (20 min) — propose options, pick one primary solution</li>
+            <li><strong>Make it concrete</strong> (25 min) — data/products needed, pipeline touchpoints, risks</li>
+            <li><strong>Commitment + deliverable</strong> (15 min) — owners + first action within 4–8 weeks</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h3>Example Breakout Topic Cards</h3>
+        <p>Teams will select from topics like these (final selection made during the workshop):</p>
+        <div class="topic-grid">
+            <div class="topic-card">
+                <h4>1. Scattering variability → timing bias</h4>
+                <p>Detect, model, and correct profile/TOA biases from time-variable scattering.</p>
+            </div>
+            <div class="topic-card">
+                <h4>2. Robust DM(t,v) modelling</h4>
+                <p>Define a minimum standard across wideband + multi-telescope data.</p>
+            </div>
+            <div class="topic-card">
+                <h4>3. Screen geometry from scintillometry</h4>
+                <p>Turn arcs/anisotropy into constraints on screen distance, velocities, and timing priors.</p>
+            </div>
+            <div class="topic-card">
+                <h4>4. VLBI + scintillometry fusion</h4>
+                <p>Joint observables/products for robust screen localisation and validation.</p>
+            </div>
+            <div class="topic-card">
+                <h4>5. Solar wind vs ISM disentangling</h4>
+                <p>Operational diagnostics to separate heliosphere from ISM propagation.</p>
+            </div>
+            <div class="topic-card">
+                <h4>6. ISM-informed PTA likelihoods</h4>
+                <p>Inject ISM measurements into PTA analyses as priors and nuisance models.</p>
+            </div>
+            <div class="topic-card">
+                <h4>7. Minimal ISM data product spec</h4>
+                <p>Define a realistic, shareable product that lowers barriers across PTAs.</p>
+            </div>
+            <div class="topic-card">
+                <h4>8. Benchmarks &amp; validation datasets</h4>
+                <p>Shared simulations/real-data benchmarks + metrics to compare correction methods.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        This programme is preliminary and will be updated as the workshop approaches. Check back regularly or follow announcements on the <a href="index.html#announcements">main page</a>.
+    </div>
+</div>
+
+</body>
+</html>

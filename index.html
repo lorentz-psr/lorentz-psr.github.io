@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advancing Pulsar Science in the Era of Modern Interferometers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Reset & Base ── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-deep:    #06090f;
+            --bg-primary: #0b1120;
+            --bg-card:    #111827;
+            --bg-card-hover: #1a2332;
+            --accent:     #c9a84c;
+            --accent-dim: #a08030;
+            --accent-glow: rgba(201,168,76,0.12);
+            --text:       #e2e8f0;
+            --text-dim:   #94a3b8;
+            --text-faint: #64748b;
+            --border:     #1e293b;
+            --radius:     10px;
+            --max-w:      1120px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection { background: var(--accent); color: var(--bg-deep); }
+
+        a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: #e2c870; }
+
+        /* ── Navigation ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(6,9,15,0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s;
+        }
+        .nav-inner {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+        .nav-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--accent);
+            letter-spacing: 0.02em;
+        }
+        .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        .nav-toggle { display: none; background: none; border: none; color: var(--text); cursor: pointer; }
+        .nav-toggle svg { width: 24px; height: 24px; }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 50% at 50% 40%, rgba(201,168,76,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 60% at 30% 80%, rgba(30,60,120,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 60% at 80% 20%, rgba(60,40,100,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        /* Subtle star-field */
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4), transparent),
+                radial-gradient(1px 1px at 25% 65%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(1.5px 1.5px at 55% 15%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 70% 45%, rgba(255,255,255,0.25), transparent),
+                radial-gradient(1px 1px at 85% 80%, rgba(255,255,255,0.35), transparent),
+                radial-gradient(1px 1px at 40% 90%, rgba(255,255,255,0.2), transparent),
+                radial-gradient(1.5px 1.5px at 92% 30%, rgba(255,255,255,0.45), transparent),
+                radial-gradient(1px 1px at 15% 50%, rgba(255,255,255,0.15), transparent),
+                radial-gradient(1px 1px at 60% 70%, rgba(255,255,255,0.3), transparent),
+                radial-gradient(1px 1px at 35% 35%, rgba(255,255,255,0.2), transparent);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .hero-content { position: relative; z-index: 1; max-width: 800px; }
+        .hero-badge {
+            display: inline-block;
+            padding: 0.35rem 1.1rem;
+            border: 1px solid var(--accent-dim);
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.8rem;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.2rem;
+            color: #fff;
+        }
+        .hero h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+        .hero-meta {
+            font-size: 1.05rem;
+            color: var(--text-dim);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+        .hero-meta strong { color: var(--text); font-weight: 600; }
+        .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.7rem 1.6rem;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: all 0.25s;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-deep);
+        }
+        .btn-primary:hover { background: #e2c870; color: var(--bg-deep); transform: translateY(-1px); }
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent-dim);
+        }
+        .btn-outline:hover { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+
+        /* ── Sections ── */
+        section { padding: 5rem 2rem; }
+        .container { max-width: var(--max-w); margin: 0 auto; }
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        .section-subtitle {
+            color: var(--text-dim);
+            font-size: 1rem;
+            max-width: 680px;
+            margin-bottom: 2.5rem;
+        }
+        .divider {
+            width: 48px; height: 2px;
+            background: var(--accent-dim);
+            margin: 1rem 0 2rem;
+        }
+
+        /* ── About / Science ── */
+        #about { background: var(--bg-primary); }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        .about-text p { margin-bottom: 1.2rem; color: var(--text-dim); }
+        .about-text p:first-of-type { color: var(--text); font-size: 1.02rem; }
+        .science-pillars {
+            display: grid;
+            gap: 1rem;
+        }
+        .pillar {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.4rem;
+            transition: border-color 0.3s, background 0.3s;
+        }
+        .pillar:hover { border-color: var(--accent-dim); background: var(--bg-card-hover); }
+        .pillar-icon {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            background: var(--accent-glow);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 0.8rem;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+        .pillar h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.4rem;
+        }
+        .pillar p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; }
+
+        /* ── Programme ── */
+        #programme { background: var(--bg-deep); }
+        .day-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .day-tab {
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-card);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+        .day-tab:hover { border-color: var(--accent-dim); color: var(--text); }
+        .day-tab.active { background: var(--accent); color: var(--bg-deep); border-color: var(--accent); }
+        .day-content { display: none; }
+        .day-content.active { display: block; }
+        .day-theme {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+        .schedule-item {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .schedule-item:last-child { border-bottom: none; }
+        .schedule-time {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            padding-top: 0.1rem;
+            white-space: nowrap;
+        }
+        .schedule-desc h4 {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.2rem;
+        }
+        .schedule-desc p { font-size: 0.85rem; color: var(--text-dim); }
+        .schedule-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.15rem 0.55rem;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+        .tag-keynote { background: rgba(201,168,76,0.15); color: var(--accent); }
+        .tag-discussion { background: rgba(59,130,246,0.15); color: #60a5fa; }
+        .tag-breakout { background: rgba(52,211,153,0.15); color: #34d399; }
+        .tag-social { background: rgba(244,114,182,0.15); color: #f472b6; }
+        .tag-interactive { background: rgba(168,85,247,0.15); color: #a78bfa; }
+
+        .programme-note {
+            margin-top: 2rem;
+            padding: 1rem 1.4rem;
+            background: var(--bg-card);
+            border-left: 3px solid var(--accent-dim);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        .programme-note a { font-weight: 500; }
+
+        /* ── Participants ── */
+        #participants { background: var(--bg-primary); }
+        .participant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+        .participant-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+        .participant-card:hover { border-color: var(--accent-dim); transform: translateY(-2px); }
+        .participant-avatar {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--bg-card-hover), var(--border));
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            overflow: hidden;
+        }
+        .participant-avatar img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .participant-info h4 {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.15rem;
+        }
+        .participant-info .affiliation {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            margin-bottom: 0.3rem;
+        }
+        .participant-info .expertise {
+            font-size: 0.75rem;
+            color: var(--text-faint);
+            font-style: italic;
+        }
+
+        /* ── Organisers ── */
+        #organisers { background: var(--bg-deep); }
+        .org-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .org-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            transition: border-color 0.3s;
+        }
+        .org-card:hover { border-color: var(--accent-dim); }
+        .org-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.2rem;
+        }
+        .org-card .org-role {
+            font-size: 0.82rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+        }
+        .org-card p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.65;
+        }
+
+        /* ── Logistics ── */
+        #logistics { background: var(--bg-primary); }
+        .logistics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .logistics-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.6rem;
+        }
+        .logistics-card h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .logistics-card h3 .icon {
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            background: var(--accent-glow);
+            display: inline-flex;
+            align-items: center; justify-content: center;
+            font-size: 0.85rem;
+        }
+        .logistics-card p, .logistics-card li {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+        .logistics-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .logistics-card li::before {
+            content: '→';
+            color: var(--accent-dim);
+            margin-right: 0.5rem;
+        }
+        .logistics-card a { font-weight: 500; }
+
+        /* ── Announcements ── */
+        #announcements { background: var(--bg-deep); }
+        .announcement-list { max-width: 700px; }
+        .announcement {
+            padding: 1.2rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .announcement:last-child { border-bottom: none; }
+        .announcement-date {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.3rem;
+        }
+        .announcement h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+        .announcement p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        /* ── Footer ── */
+        footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+        }
+        .footer-inner {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        .footer-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        .footer-brand + p {
+            font-size: 0.82rem;
+            color: var(--text-faint);
+            max-width: 350px;
+        }
+        .footer-links h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 0.8rem;
+        }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.4rem; }
+        .footer-links a { font-size: 0.85rem; color: var(--text-dim); }
+        .footer-links a:hover { color: var(--accent); }
+        .footer-bottom {
+            max-width: var(--max-w);
+            margin: 2rem auto 0;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .footer-bottom p {
+            font-size: 0.78rem;
+            color: var(--text-faint);
+        }
+        .sponsor-logos {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .sponsor-logos img {
+            height: 32px;
+            opacity: 0.6;
+            filter: grayscale(1) brightness(1.5);
+            transition: opacity 0.3s, filter 0.3s;
+        }
+        .sponsor-logos img:hover { opacity: 1; filter: none; }
+
+        /* ── Mobile ── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0; right: 0;
+                background: rgba(6,9,15,0.96);
+                padding: 1.5rem 2rem;
+                gap: 1rem;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-toggle { display: block; }
+            .about-grid { grid-template-columns: 1fr; }
+            .org-grid { grid-template-columns: 1fr; }
+            .logistics-grid { grid-template-columns: 1fr; }
+            .participant-grid { grid-template-columns: 1fr 1fr; }
+            .schedule-item { grid-template-columns: 90px 1fr; gap: 1rem; }
+            .hero { min-height: auto; padding: 8rem 1.5rem 4rem; }
+            .footer-inner { flex-direction: column; }
+        }
+        @media (max-width: 480px) {
+            .participant-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── Fade-in animation ── */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════ Navigation ═══════ -->
+<nav>
+    <div class="nav-inner">
+        <a href="#" class="nav-brand">GW Astronomy @ Lorentz 2026</a>
+        <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#about">Science</a></li>
+            <li><a href="#programme">Programme</a></li>
+            <li><a href="#participants">Participants</a></li>
+            <li><a href="#organisers">Organisers</a></li>
+            <li><a href="#logistics">Logistics</a></li>
+            <li><a href="#announcements">Updates</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ═══════ Hero ═══════ -->
+<header class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">WE-Heraeus Lorentz Workshop</div>
+        <h1>Advancing Pulsar Science in the Era of <em>Modern Interferometers</em></h1>
+        <p class="hero-meta">
+            <strong>18 – 22 May 2026</strong> &nbsp;·&nbsp; Lorentz Center@Omega, Leiden, The Netherlands
+        </p>
+        <div class="hero-actions">
+            <a href="#programme" class="btn btn-primary">View Programme</a>
+            <a href="https://mattermost-placeholder.example.com" target="_blank" class="btn btn-outline">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.38 5.07L2 22l4.93-1.38A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.7 0-3.29-.52-4.6-1.4l-.33-.2-3.4.95.95-3.4-.2-.33A7.96 7.96 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8z"/></svg>
+                Discussion Channel
+            </a>
+            <a href="https://www.lorentzcenter.nl/advancing-pulsar-science-in-the-era-of-modern-interferometers.html" target="_blank" class="btn btn-outline">Lorentz Center Page</a>
+        </div>
+
+    </div>
+</header>
+
+<!-- ═══════ About / Science ═══════ -->
+<section id="about">
+    <div class="container fade-in">
+        <div class="about-grid">
+            <div class="about-text">
+                <p class="section-label">Scientific Context</p>
+                <h2 class="section-title">Bridging Gravitational Waves, the ISM &amp; VLBI</h2>
+                <div class="divider"></div>
+                <p>
+                    The recent milestone detection of the nanohertz gravitational wave background by Pulsar Timing Arrays has opened an entirely new observational window into the Universe. As we move towards the most sensitive datasets ever assembled, the astrophysical interpretation of these signals is limited by two key challenges: poor models of the intervening interstellar medium (ISM), and uncertainties in pulsar distance measurements.
+                </p>
+                <p>
+                    This workshop brings together, for the first time, leading experts in gravitational wave science, interstellar medium studies, and Very Long Baseline Interferometry (VLBI) to collaboratively identify and address these limitations. Through keynote talks, interactive tutorials, and structured breakout sessions, we aim to produce actionable research plans and observing strategies that integrate cutting-edge techniques across all three fields.
+                </p>
+                <p>
+                    The workshop is particularly timely given significant upgrades to the European VLBI Network, the advent of next-generation radio facilities like the SKA and DSA-2000, and the forthcoming third data release of the International Pulsar Timing Array.
+                </p>
+            </div>
+            <div class="science-pillars">
+                <div class="pillar">
+                    <div class="pillar-icon">&#x1F30C;</div>
+                    <h3>Gravitational Wave Astrophysics</h3>
+                    <p>Characterising the nanohertz GW background from supermassive black hole binaries using Pulsar Timing Arrays. Understanding the signal's spectrum and spatial correlations to constrain SMBHB populations.</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-icon">&#x1F300;</div>
+                    <h3>Interstellar Medium</h3>
+                    <p>Modelling time-variable dispersion, scattering, and scintillation. Integrating ISM measurements into timing models and developing robust correction techniques for next-generation PTA datasets.</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-icon">&#x1F4E1;</div>
+                    <h3>VLBI Astrometry</h3>
+                    <p>Precision parallax-based pulsar distances using VLBI. Identifying and mitigating systematic errors from ionospheric and ISM propagation effects to achieve sub-parsec distance determinations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ Programme ═══════ -->
+<section id="programme">
+    <div class="container fade-in">
+        <p class="section-label">Programme</p>
+        <h2 class="section-title">Five Days of Science</h2>
+        <p class="section-subtitle">
+            Keynotes, interactive tutorials, and structured breakout sessions designed to produce concrete, actionable outcomes.
+        </p>
+
+        <div class="day-tabs">
+            <button class="day-tab active" onclick="showDay(0)">Mon 18</button>
+            <button class="day-tab" onclick="showDay(1)">Tue 19</button>
+            <button class="day-tab" onclick="showDay(2)">Wed 20</button>
+            <button class="day-tab" onclick="showDay(3)">Thu 21</button>
+            <button class="day-tab" onclick="showDay(4)">Fri 22</button>
+        </div>
+
+        <!-- Day 1 -->
+        <div class="day-content active" id="day-0">
+            <p class="day-theme">Opening Day &mdash; Setting the Scene</p>
+            <div class="schedule-item">
+                <span class="schedule-time">10:00 – 10:25</span>
+                <div class="schedule-desc">
+                    <h4>Welcome &amp; Workshop Overview</h4>
+                    <p>Lorentz Centre introduction + workshop goals (Aditya Parthasarathy)</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">10:25 – 11:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-social">Social</span>Introductory Science Sparklers — Session A</h4>
+                    <p>~30 participants: 1-minute introductions sharing expertise, interests, and goals for the week</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">11:00 – 12:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-keynote">Keynote</span>PTA / GW Science</h4>
+                    <p><em>The first inroads into the low-frequency gravitational-wave spectrum: Results and Challenges</em> — Matthew Kerr</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">12:00 – 13:30</span>
+                <div class="schedule-desc"><h4>Lunch</h4></div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">13:30 – 14:30</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-keynote">Keynote</span>ISM Propagation</h4>
+                    <p><em>The interstellar medium in space and time: current state-of-the-art in scintillometry and imaging techniques</em> — Stella Ocker</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">14:30 – 15:00</span>
+                <div class="schedule-desc"><h4>Coffee Break</h4></div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">15:00 – 16:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-keynote">Keynote</span>VLBI Astrometry</h4>
+                    <p><em>Precision astrometry on compact objects with VLBI and avenues for advancements</em> — Adam Deller</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">16:00 – 16:30</span>
+                <div class="schedule-desc"><h4>Coffee Break</h4></div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">16:30 – 17:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-social">Social</span>Introductory Science Sparklers — Session B</h4>
+                    <p>~25 participants</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">17:00 onward</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-social">Social</span>Welcome Reception</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 2 -->
+        <div class="day-content" id="day-1">
+            <p class="day-theme">PTA: Challenges &amp; Solutions</p>
+            <div class="schedule-item">
+                <span class="schedule-time">10:00 – 10:40</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-keynote">Keynote</span>PTA Challenges</h4>
+                    <p>Daniel Reardon</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">10:40 – 11:05</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Plenary Discussion A</h4>
+                    <p>Prioritise topics and questions emerging from Keynote 1</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">11:05 – 11:45</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-keynote">Keynote</span>PTA Keynote 2</h4>
+                    <p><em>Speaker to be confirmed</em></p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">11:45 – 12:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Plenary Discussion B</h4>
+                    <p>Finalise shortlist of breakout questions + key ideas</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">12:00 – 13:30</span>
+                <div class="schedule-desc"><h4>Lunch</h4></div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">13:30 – 14:15</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-interactive">Interactive</span>PTA Tutorial Session</h4>
+                    <p>PTA observables → constraints → how they plug into timing</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">14:15 – 14:55</span>
+                <div class="schedule-desc">
+                    <h4>Breakout Overview &amp; Team Assignment + Coffee</h4>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">15:10 – 16:20</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-breakout">Breakout</span>PTA Breakout Sessions</h4>
+                    <p>8 teams of 6–7: one PTA challenge + actionable solution</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">16:40 – 17:20</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Breakout Outcomes &amp; Pitches</h4>
+                    <p>Moderator synthesis + 1 reporter per team</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">17:20 – 18:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Guided Discussion</h4>
+                    <p>All participants: shortlisted topics, define success criteria</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 3 -->
+        <div class="day-content" id="day-2">
+            <p class="day-theme">ISM: Challenges &amp; Solutions</p>
+            <div class="schedule-item">
+                <span class="schedule-time">10:00 – 10:40</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-keynote">Keynote</span>Pulsar Scintillometry</h4>
+                    <p><em>Advances in pulsar scintillometry techniques</em> — Tim Sprenger</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">10:40 – 11:05</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Plenary Discussion A</h4>
+                    <p>Prioritise topics emerging from Keynote 1</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">11:05 – 11:45</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-keynote">Keynote</span>VLBI Astrometry of Scintillation Screens</h4>
+                    <p><em>High-resolution VLBI astrometry of pulsar scintillation screens</em> — Ashley Stock</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">11:45 – 12:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Plenary Discussion B</h4>
+                    <p>Finalise breakout questions + key ideas</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">12:00 – 13:30</span>
+                <div class="schedule-desc"><h4>Lunch</h4></div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">13:30 – 14:15</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-interactive">Interactive</span>ISM Tutorial Session</h4>
+                    <p>ISM observables → constraints → how they plug into timing</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">14:15 – 14:55</span>
+                <div class="schedule-desc">
+                    <h4>Breakout Overview &amp; Team Assignment + Coffee</h4>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">15:10 – 16:20</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-breakout">Breakout</span>ISM Breakout Sessions</h4>
+                    <p>8 teams of 6–7: one ISM challenge + actionable solution</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">16:40 – 17:20</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Breakout Outcomes &amp; Pitches</h4>
+                    <p>Moderator synthesis + 1 reporter per team</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">17:20 – 18:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Guided Discussion</h4>
+                    <p>All participants: shortlisted topics, define success criteria</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 4 -->
+        <div class="day-content" id="day-3">
+            <p class="day-theme">VLBI: Challenges &amp; Solutions</p>
+            <div class="schedule-item">
+                <span class="schedule-time">10:00 – 10:40</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-keynote">Keynote</span>VLBI Keynote 1</h4>
+                    <p><em>Speaker to be confirmed</em></p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">10:40 – 11:05</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Plenary Discussion A</h4>
+                    <p>Prioritise topics emerging from Keynote 1</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">11:05 – 11:45</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-keynote">Keynote</span>The MSPSRPI2 Project</h4>
+                    <p><em>A large-scale astrometric project for millisecond pulsars</em> — Bailee Wolfe</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">11:45 – 12:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Plenary Discussion B</h4>
+                    <p>Finalise breakout questions + key ideas</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">12:00 – 13:30</span>
+                <div class="schedule-desc"><h4>Lunch</h4></div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">13:30 – 14:15</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-interactive">Interactive</span>VLBI Tutorial Session</h4>
+                    <p>VLBI observables → constraints → how they plug into timing</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">14:15 – 14:55</span>
+                <div class="schedule-desc">
+                    <h4>Breakout Overview &amp; Team Assignment + Coffee</h4>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">15:10 – 16:20</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-breakout">Breakout</span>VLBI Breakout Sessions</h4>
+                    <p>8 teams of 6–7: one VLBI challenge + actionable solution</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">16:40 – 17:20</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Breakout Outcomes &amp; Pitches</h4>
+                    <p>Moderator synthesis + 1 reporter per team</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">17:20 – 18:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Guided Discussion</h4>
+                    <p>All participants: shortlisted topics, define success criteria</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 5 -->
+        <div class="day-content" id="day-4">
+            <p class="day-theme">Synthesis &amp; Roadmap</p>
+            <div class="schedule-item">
+                <span class="schedule-time">10:00 – 12:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-breakout">Working</span>Consolidation Sessions</h4>
+                    <p>Participants collaboratively draft actionable research plans, grant proposals, and observing strategies based on the week's discussions.</p>
+                </div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">12:00 – 13:30</span>
+                <div class="schedule-desc"><h4>Lunch</h4></div>
+            </div>
+            <div class="schedule-item">
+                <span class="schedule-time">13:30 – 15:00</span>
+                <div class="schedule-desc">
+                    <h4><span class="schedule-tag tag-discussion">Discussion</span>Roadmap &amp; Next Steps</h4>
+                    <p>Culminating in a community roadmap document to guide future collaborative efforts across PTA, ISM, and VLBI communities.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="programme-note">
+            The programme is preliminary and subject to change. A detailed schedule with breakout topic cards will be shared closer to the workshop. See the full <a href="programme.html">detailed programme &rarr;</a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ Participants ═══════ -->
+<section id="participants">
+    <div class="container fade-in">
+        <p class="section-label">Participants</p>
+        <h2 class="section-title">Researchers from Around the World</h2>
+        <p class="section-subtitle">
+            Experts spanning pulsar timing, ISM studies, VLBI astrometry, and instrumentation.
+        </p>
+
+        <div class="participant-grid" id="participant-grid">
+            <!-- Populated by JS below -->
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ Organisers ═══════ -->
+<section id="organisers">
+    <div class="container fade-in">
+        <p class="section-label">Scientific Organising Committee</p>
+        <h2 class="section-title">Organisers</h2>
+        <div class="divider"></div>
+
+        <div class="org-grid">
+            <div class="org-card">
+                <h4>Aditya Parthasarathy</h4>
+                <p class="org-role">Chair &middot; ASTRON &amp; University of Amsterdam</p>
+                <p>Expert in precision pulsar timing and gravitational wave science. Led key efforts in the European and International PTA collaborations. ERC Starting Grant and NWO-I Veni fellow.</p>
+            </div>
+            <div class="org-card">
+                <h4>Nataliya Porayko</h4>
+                <p class="org-role">Sternberg Astronomical Institute &amp; MPIfR</p>
+                <p>Specialist in gravitational wave science and dark matter searches with PTAs. Executive committee member of the EPTA, steering committee of the IPTA.</p>
+            </div>
+            <div class="org-card">
+                <h4>Pikky Atri</h4>
+                <p class="org-role">ASTRON</p>
+                <p>Expert in VLBI astrometry and compact object studies. WISE fellow leading observing campaigns with major VLBI facilities worldwide.</p>
+            </div>
+            <div class="org-card">
+                <h4>Tim Sprenger</h4>
+                <p class="org-role">MPIfR, Germany</p>
+                <p>Specialist in pulsar scintillation and novel data analysis methods. Developing theoretical models for anisotropic interstellar scattering screens.</p>
+            </div>
+            <div class="org-card">
+                <h4>Hao Ding</h4>
+                <p class="org-role">National Astronomical Observatories of China</p>
+                <p>Precision radio astrometry using VLBI. Led the largest astrometric survey of millisecond pulsars. IAU PhD Prize honourable mention.</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <p style="font-size: 0.85rem; color: var(--text-dim);">
+                <strong style="color: var(--text);">Workshop Coordinator:</strong> Emmy Verlek-Hage, Lorentz Center &middot;
+                <a href="mailto:verlek@lorentzcenter.nl">verlek@lorentzcenter.nl</a> &middot; +31 71 527 5659
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ Logistics ═══════ -->
+<section id="logistics">
+    <div class="container fade-in">
+        <p class="section-label">Practical Information</p>
+        <h2 class="section-title">Logistics</h2>
+        <p class="section-subtitle">Everything you need to know about attending the workshop in Leiden.</p>
+
+        <div class="logistics-grid">
+            <div class="logistics-card">
+                <h3><span class="icon">&#x1F4CD;</span> Venue</h3>
+                <p>
+                    <strong>Lorentz Center@Omega</strong><br>
+                    Niels Bohrweg 2, 2333 CA Leiden, The Netherlands<br><br>
+                    The Lorentz Center is located on the campus of Leiden University, within walking distance of Leiden Centraal station.
+                </p>
+            </div>
+            <div class="logistics-card">
+                <h3><span class="icon">&#x2708;&#xFE0F;</span> Getting There</h3>
+                <ul>
+                    <li>Amsterdam Schiphol Airport (AMS) — 25 min by train to Leiden Centraal</li>
+                    <li>Rotterdam The Hague Airport (RTM) — 30 min by public transport</li>
+                    <li>From Leiden Centraal: bus 43 towards LUMC or 15-minute walk</li>
+                </ul>
+            </div>
+            <div class="logistics-card">
+                <h3><span class="icon">&#x1F3E8;</span> Accommodation</h3>
+                <p>
+                    <strong>Van der Valk Hotel Leiden</strong><br>
+                    From Leiden train station, take bus 43 to bus stop 'Haagsche Schouw', or take a taxi (~&euro;15).<br><br>
+                    <strong>Arrival:</strong> Sunday 17 May 2026 &nbsp;|&nbsp; <strong>Departure:</strong> Friday 22 May 2026<br>
+                    <strong>Check-in:</strong> 15:00 &nbsp;|&nbsp; <strong>Check-out:</strong> 11:00<br><br>
+                    The reservation is guaranteed and held for late arrival. The Lorentz Center will cover 5 nights (Sun 17 May – Fri 22 May). Please note that any hotel nights in the weekends before or after the workshop week may incur extra costs that cannot be covered. Contact the <a href="mailto:verlek@lorentzcenter.nl">workshop coordinator</a> for questions.
+                </p>
+            </div>
+            <div class="logistics-card">
+                <h3><span class="icon">&#x1F4AC;</span> Communication</h3>
+                <p>
+                    We have a dedicated <a href="https://mattermost-placeholder.example.com" target="_blank">Mattermost channel</a> for real-time discussions during and after the workshop. All invited participants will receive access details by email.
+                </p>
+            </div>
+            <div class="logistics-card">
+                <h3><span class="icon">&#x1F4CB;</span> Registration</h3>
+                <p>
+                    This is an invitation-only workshop. If you have been invited, you will receive registration details from the Lorentz Center directly. Visit the <a href="https://www.lorentzcenter.nl/advancing-pulsar-science-in-the-era-of-modern-interferometers.html" target="_blank">official Lorentz Center page</a> for registration.
+                </p>
+            </div>
+            <div class="logistics-card">
+                <h3><span class="icon">&#x1F372;</span> Meals &amp; Social</h3>
+                <p>
+                    Lunches and coffee breaks are provided at the Lorentz Center. A welcome reception will be held on Monday evening. Details of the workshop dinner will be announced closer to the date.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ Announcements ═══════ -->
+<section id="announcements">
+    <div class="container fade-in">
+        <p class="section-label">Updates</p>
+        <h2 class="section-title">Announcements</h2>
+        <div class="divider"></div>
+
+        <div class="announcement-list">
+            <div class="announcement">
+                <p class="announcement-date">March 2026</p>
+                <h4>Workshop website launched</h4>
+                <p>The workshop website is now live. Programme details and logistics information will be updated as we approach May.</p>
+            </div>
+            <div class="announcement">
+                <p class="announcement-date">Coming Soon</p>
+                <h4>Detailed programme &amp; breakout topic cards</h4>
+                <p>The full programme with breakout topic assignments and interactive session details will be posted here.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════ Footer ═══════ -->
+<footer>
+    <div class="footer-inner">
+        <div>
+            <p class="footer-brand">GW Astronomy @ Lorentz 2026</p>
+            <p>A WE-Heraeus Lorentz Workshop bringing together experts in gravitational wave science, the interstellar medium, and VLBI astrometry.</p>
+        </div>
+        <div class="footer-links">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="https://www.lorentzcenter.nl/advancing-pulsar-science-in-the-era-of-modern-interferometers.html" target="_blank">Lorentz Center Page</a></li>
+                <li><a href="https://mattermost-placeholder.example.com" target="_blank">Mattermost Channel</a></li>
+                <li><a href="mailto:parthas@astron.nl">Contact Organisers</a></li>
+                <li><a href="programme.html">Full Programme</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h4>Sponsors</h4>
+            <ul>
+                <li><a href="https://www.we-heraeus-stiftung.de/english/" target="_blank">WE-Heraeus Foundation</a></li>
+                <li><a href="https://www.lorentzcenter.nl/" target="_blank">Lorentz Center</a></li>
+                <li><a href="https://erc.europa.eu/" target="_blank">European Research Council (ERC-GIGA)</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- ERC-GIGA Logo -->
+    <div style="max-width: var(--max-w); margin: 2rem auto 0; padding: 1rem 2rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+        <p style="font-size: 0.75rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">Supported by</p>
+        <a href="https://erc.europa.eu/" target="_blank" title="Aditya Parthasarathy's ERC-GIGA Starting Grant">
+            <img src="giga_logo.png" alt="ERC-GIGA" style="height: 56px; opacity: 0.85; transition: opacity 0.3s;">
+        </a>
+    </div>
+    <div class="footer-bottom" style="max-width: var(--max-w); margin: 1.5rem auto 0; padding: 1.5rem 2rem 0; border-top: 1px solid var(--border);">
+        <p>&copy; 2026 Workshop Organisers. Hosted on <a href="https://pages.github.com" target="_blank">GitHub Pages</a>.</p>
+    </div>
+</footer>
+
+<script>
+// ── Participant Data ──
+const participants = [
+    { name: "Pikky Atri", affiliation: "ASTRON", expertise: "VLBI astrometry, compact objects" },
+    { name: "Daniel Baker", affiliation: "", expertise: "Interstellar interferometry" },
+    { name: "Silke Britzen", affiliation: "", expertise: "" },
+    { name: "Andreas Brunthaler", affiliation: "", expertise: "" },
+    { name: "Aurelien Chalumeau", affiliation: "", expertise: "" },
+    { name: "David Champion", affiliation: "", expertise: "Pulsar timing" },
+    { name: "James Cordes", affiliation: "", expertise: "ISM, scintillation" },
+    { name: "Alice Curtin", affiliation: "", expertise: "" },
+    { name: "Adam Deller", affiliation: "", expertise: "VLBI pulsar astrometry" },
+    { name: "Hao Ding", affiliation: "NAOC", expertise: "Precision VLBI astrometry" },
+    { name: "Florian Eppel", affiliation: "", expertise: "" },
+    { name: "Krisztina Gabanyi", affiliation: "", expertise: "" },
+    { name: "Kelly Gourdji", affiliation: "", expertise: "" },
+    { name: "Kathrin Grunthal", affiliation: "", expertise: "" },
+    { name: "Nina Gusinskaia", affiliation: "", expertise: "" },
+    { name: "Huanchen Hu", affiliation: "", expertise: "" },
+    { name: "Dylan Jow", affiliation: "", expertise: "" },
+    { name: "Michael Keith", affiliation: "", expertise: "" },
+    { name: "Matthew Kerr", affiliation: "", expertise: "PTA/GW science" },
+    { name: "Atharva Kulkarni", affiliation: "", expertise: "" },
+    { name: "Michael Lam", affiliation: "", expertise: "" },
+    { name: "Pranav Limaye", affiliation: "", expertise: "" },
+    { name: "Robert Main", affiliation: "", expertise: "Scintillometry" },
+    { name: "Sara Manzini", affiliation: "", expertise: "" },
+    { name: "John McKean", affiliation: "", expertise: "" },
+    { name: "Matthew Miles", affiliation: "", expertise: "" },
+    { name: "Marc-Antoine Miville-Deschênes", affiliation: "", expertise: "" },
+    { name: "Diego Montalvo", affiliation: "", expertise: "" },
+    { name: "Pauline Noé", affiliation: "", expertise: "" },
+    { name: "Stella Ocker", affiliation: "", expertise: "ISM, scintillometry" },
+    { name: "Aditya Parthasarathy", affiliation: "ASTRON", expertise: "Pulsar timing, GW science" },
+    { name: "Ue-Li Pen", affiliation: "", expertise: "Scintillation theory" },
+    { name: "Delphine Perrodin", affiliation: "", expertise: "" },
+    { name: "Nataliya Porayko", affiliation: "MPIfR", expertise: "GW science, dark matter, PTAs" },
+    { name: "Jack Radcliffe", affiliation: "", expertise: "" },
+    { name: "Prerna Rana", affiliation: "", expertise: "" },
+    { name: "Daniel Reardon", affiliation: "", expertise: "PTA science" },
+    { name: "Xun Shi", affiliation: "", expertise: "" },
+    { name: "Tim Sprenger", affiliation: "MPIfR", expertise: "Pulsar scintillation" },
+    { name: "Dan Stinebring", affiliation: "", expertise: "ISM, scintillation arcs" },
+    { name: "Ashley Stock", affiliation: "", expertise: "VLBI, scintillation screens" },
+    { name: "Caterina Tiburzi", affiliation: "", expertise: "" },
+    { name: "Jacob Turner", affiliation: "", expertise: "" },
+    { name: "Rutger van Haasteren", affiliation: "", expertise: "" },
+    { name: "Marten van Kerkwijk", affiliation: "", expertise: "" },
+    { name: "Willem van Straten", affiliation: "", expertise: "" },
+    { name: "Niccolo Veronesi", affiliation: "", expertise: "" },
+    { name: "Robert Wharton", affiliation: "", expertise: "" },
+    { name: "Bailee Wolfe", affiliation: "", expertise: "VLBI astrometry, MSPSRpi2" },
+    { name: "Olaf Wucknitz", affiliation: "", expertise: "" }
+];
+
+function getInitials(name) {
+    return name.split(' ').map(n => n[0]).join('');
+}
+
+const grid = document.getElementById('participant-grid');
+participants.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'participant-card';
+    card.innerHTML = `
+        <div class="participant-avatar">${getInitials(p.name)}</div>
+        <div class="participant-info">
+            <h4>${p.name}</h4>
+            ${p.affiliation ? `<p class="affiliation">${p.affiliation}</p>` : ''}
+            ${p.expertise ? `<p class="expertise">${p.expertise}</p>` : ''}
+        </div>
+    `;
+    grid.appendChild(card);
+});
+
+// ── Day Tabs ──
+function showDay(idx) {
+    document.querySelectorAll('.day-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+    document.querySelectorAll('.day-content').forEach((c, i) => c.classList.toggle('active', i === idx));
+}
+
+// ── Scroll fade-in ──
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ── Active nav link ──
+const sections = document.querySelectorAll('section[id]');
+window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY + 100;
+    sections.forEach(s => {
+        const top = s.offsetTop;
+        const h = s.offsetHeight;
+        const id = s.getAttribute('id');
+        const link = document.querySelector(`.nav-links a[href="#${id}"]`);
+        if (link) link.classList.toggle('active', scrollY >= top && scrollY < top + h);
+    });
+});
+</script>
+
+</body>
+</html>
