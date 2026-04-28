@@ -102,25 +102,7 @@
                 radial-gradient(ellipse 50% 60% at 80% 20%, rgba(60,40,100,0.08) 0%, transparent 70%);
             pointer-events: none;
         }
-        /* Subtle star-field */
-        .hero::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4), transparent),
-                radial-gradient(1px 1px at 25% 65%, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1.5px 1.5px at 55% 15%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 70% 45%, rgba(255,255,255,0.25), transparent),
-                radial-gradient(1px 1px at 85% 80%, rgba(255,255,255,0.35), transparent),
-                radial-gradient(1px 1px at 40% 90%, rgba(255,255,255,0.2), transparent),
-                radial-gradient(1.5px 1.5px at 92% 30%, rgba(255,255,255,0.45), transparent),
-                radial-gradient(1px 1px at 15% 50%, rgba(255,255,255,0.15), transparent),
-                radial-gradient(1px 1px at 60% 70%, rgba(255,255,255,0.3), transparent),
-                radial-gradient(1px 1px at 35% 35%, rgba(255,255,255,0.2), transparent);
-            pointer-events: none;
-            opacity: 0.6;
-        }
+        /* Star-field now handled by canvas animation */
         .hero-content { position: relative; z-index: 1; max-width: 800px; }
         .hero-badge {
             display: inline-block;
@@ -608,6 +590,7 @@
 
 <!-- ═══════ Hero ═══════ -->
 <header class="hero">
+    <canvas id="hero-canvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
     <div class="hero-content">
         <div class="hero-badge">WE-Heraeus Lorentz Workshop</div>
         <h1>Advancing Pulsar Science in the Era of <em>Modern Interferometers</em></h1>
@@ -1294,6 +1277,299 @@ window.addEventListener('scroll', () => {
         if (link) link.classList.toggle('active', scrollY >= top && scrollY < top + h);
     });
 });
+</script>
+
+<script>
+// ═══════ Hero Canvas Animation ═══════
+(function() {
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H, dpr;
+
+    function resize() {
+        const hero = canvas.parentElement;
+        dpr = window.devicePixelRatio || 1;
+        W = hero.offsetWidth;
+        H = hero.offsetHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const bhSystems = [
+        { cx: 0.12, cy: 0.18, sep: 16, orbitSpeed: 0.018, angle: 0,   r1: 7, r2: 5, glowR: 45 },
+        { cx: 0.25, cy: 0.35, sep: 20, orbitSpeed: 0.013, angle: 1.8, r1: 9, r2: 7, glowR: 55 },
+        { cx: 0.08, cy: 0.50, sep: 13, orbitSpeed: 0.022, angle: 3.5, r1: 6, r2: 4, glowR: 38 },
+    ];
+
+    const gwRipples = [];
+
+    const pulsars = [
+        { cx: 0.40, cy: 0.15, angle: 0,   speed: 0.025, beamAngle: 0.35, r: 4,   pulsePhase: 0   },
+        { cx: 0.55, cy: 0.32, angle: 1.5, speed: 0.020, beamAngle: 0.30, r: 3.5, pulsePhase: 1.2 },
+        { cx: 0.35, cy: 0.45, angle: 3.0, speed: 0.030, beamAngle: 0.40, r: 4,   pulsePhase: 2.5 },
+        { cx: 0.62, cy: 0.12, angle: 4.5, speed: 0.022, beamAngle: 0.32, r: 3,   pulsePhase: 0.8 },
+        { cx: 0.48, cy: 0.28, angle: 2.0, speed: 0.018, beamAngle: 0.28, r: 3.5, pulsePhase: 3.1 },
+    ];
+
+    const clouds = [];
+    function spawnCloud() {
+        const numBlobs = 5 + Math.floor(Math.random() * 4);
+        const blobs = [];
+        for (let j = 0; j < numBlobs; j++) {
+            blobs.push({
+                ox: (Math.random() - 0.5) * 200,
+                oy: (Math.random() - 0.5) * 500,
+                r: 200 + Math.random() * 300,
+            });
+        }
+        return {
+            x: 0.35 + Math.random() * 0.25,
+            y: -0.25 - Math.random() * 0.15,
+            dx: 0.00005 + Math.random() * 0.0001,
+            dy: 0.0003 + Math.random() * 0.0002,
+            opacity: 0.012 + Math.random() * 0.018,
+            phase: Math.random() * Math.PI * 2,
+            breathSpeed: 0.0008 + Math.random() * 0.0015,
+            blobs: blobs,
+        };
+    }
+    // Single large vertically-oriented cloud — start over pulsar region
+    const c = spawnCloud();
+    c.y = 0.10 + Math.random() * 0.25;
+    clouds.push(c);
+
+    const pulses = [];
+
+    const telescopes = [
+        { cx: 0.72, cy: 0.88, scale: 1.3 },
+        { cx: 0.80, cy: 0.92, scale: 1.1 },
+        { cx: 0.88, cy: 0.87, scale: 1.4 },
+        { cx: 0.95, cy: 0.93, scale: 1.0 },
+    ];
+    const dishAngle = -Math.PI * 0.28; // focus points toward upper-left
+
+    const stars = [];
+    for (let i = 0; i < 90; i++) {
+        stars.push({
+            x: Math.random(), y: Math.random(),
+            r: 0.3 + Math.random() * 1,
+            opacity: 0.08 + Math.random() * 0.25,
+            twinkle: 0.001 + Math.random() * 0.002,
+            phase: Math.random() * Math.PI * 2,
+        });
+    }
+
+    function drawStars(t) {
+        stars.forEach(s => {
+            const alpha = s.opacity * (0.6 + 0.4 * Math.sin(t * s.twinkle + s.phase));
+            ctx.fillStyle = `rgba(220,225,240,${alpha})`;
+            ctx.beginPath();
+            ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+            ctx.fill();
+        });
+    }
+
+    function drawBlackHoleSystems(t) {
+        bhSystems.forEach(bh => {
+            const cx = bh.cx * W;
+            const cy = bh.cy * H;
+            const sep = bh.sep;
+            bh.angle += bh.orbitSpeed;
+            const x1 = cx + Math.cos(bh.angle) * sep;
+            const y1 = cy + Math.sin(bh.angle) * sep;
+            const x2 = cx - Math.cos(bh.angle) * sep;
+            const y2 = cy - Math.sin(bh.angle) * sep;
+
+            const glow = ctx.createRadialGradient(cx, cy, 2, cx, cy, bh.glowR);
+            glow.addColorStop(0, 'rgba(200,155,60,0.10)');
+            glow.addColorStop(0.4, 'rgba(140,100,40,0.04)');
+            glow.addColorStop(1, 'transparent');
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(cx, cy, bh.glowR, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(180,150,70,0.06)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let a = 0; a < Math.PI * 4; a += 0.1) {
+                const sr = sep * (1 + a * 0.08);
+                const sx = cx + Math.cos(bh.angle + a) * sr;
+                const sy = cy + Math.sin(bh.angle + a) * sr;
+                if (a === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+            }
+            ctx.stroke();
+
+            [{ x: x1, y: y1, r: bh.r1 }, { x: x2, y: y2, r: bh.r2 }].forEach(b => {
+                const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r + 5);
+                g.addColorStop(0, 'rgba(0,0,0,0.95)');
+                g.addColorStop(0.5, 'rgba(25,18,8,0.5)');
+                g.addColorStop(1, 'rgba(180,140,60,0.0)');
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r + 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        });
+    }
+
+    function emitGWRipples() {
+        bhSystems.forEach(bh => {
+            gwRipples.push({ cx: bh.cx, cy: bh.cy, r: 15, maxR: Math.max(W, H) * 0.9, opacity: 0.10 });
+        });
+    }
+
+    function drawGWRipples() {
+        for (let i = gwRipples.length - 1; i >= 0; i--) {
+            const rip = gwRipples[i];
+            rip.r += 0.55;
+            rip.opacity *= 0.9975;
+            if (rip.r > rip.maxR || rip.opacity < 0.002) { gwRipples.splice(i, 1); continue; }
+            ctx.strokeStyle = `rgba(190,165,75,${rip.opacity})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.arc(rip.cx * W, rip.cy * H, rip.r, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+    }
+
+    function drawClouds(t) {
+        for (let i = 0; i < clouds.length; i++) {
+            const c = clouds[i];
+            c.x += c.dx; c.y += c.dy;
+            if (c.y > 1.3) { clouds[i] = spawnCloud(); continue; }
+            const cx = c.x * W, cy = c.y * H;
+            const breathScale = 1 + 0.10 * Math.sin(t * c.breathSpeed + c.phase);
+            for (let j = 0; j < c.blobs.length; j++) {
+                const b = c.blobs[j];
+                const bx = cx + b.ox * breathScale, by = cy + b.oy * breathScale;
+                const br = b.r * breathScale;
+                const g = ctx.createRadialGradient(bx, by, br * 0.2, bx, by, br);
+                g.addColorStop(0,   `rgba(150,150,160,${c.opacity})`);
+                g.addColorStop(0.5, `rgba(140,140,155,${c.opacity * 0.5})`);
+                g.addColorStop(1,   'transparent');
+                ctx.fillStyle = g;
+                ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+    }
+
+    function drawPulsars(t) {
+        pulsars.forEach(p => {
+            const px = p.cx * W, py = p.cy * H;
+            let gwWobble = 0;
+            gwRipples.forEach(rip => {
+                const dist = Math.hypot(px - rip.cx * W, py - rip.cy * H);
+                const diff = Math.abs(rip.r - dist);
+                if (diff < 35) gwWobble += rip.opacity * 10 * (1 - diff / 35);
+            });
+            p.angle += p.speed + gwWobble * 0.004;
+            const g = ctx.createRadialGradient(px, py, 0, px, py, p.r + 4);
+            g.addColorStop(0, 'rgba(200,215,255,0.7)'); g.addColorStop(0.5, 'rgba(140,165,230,0.3)'); g.addColorStop(1, 'transparent');
+            ctx.fillStyle = g; ctx.beginPath(); ctx.arc(px, py, p.r + 4, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'rgba(210,220,255,0.85)'; ctx.beginPath(); ctx.arc(px, py, p.r, 0, Math.PI * 2); ctx.fill();
+            for (let dir = 0; dir < 2; dir++) {
+                const a = p.angle + dir * Math.PI;
+                ctx.save(); ctx.translate(px, py); ctx.rotate(a);
+                const beamLen = 28 + gwWobble * 2;
+                const bg = ctx.createLinearGradient(0, 0, beamLen, 0);
+                bg.addColorStop(0, 'rgba(180,200,255,0.30)'); bg.addColorStop(1, 'transparent');
+                ctx.fillStyle = bg; ctx.beginPath(); ctx.moveTo(0, 0);
+                ctx.lineTo(beamLen, -beamLen * Math.tan(p.beamAngle));
+                ctx.lineTo(beamLen, beamLen * Math.tan(p.beamAngle));
+                ctx.closePath(); ctx.fill(); ctx.restore();
+            }
+            p.pulsePhase += p.speed;
+            if (p.pulsePhase > Math.PI * 2) {
+                p.pulsePhase -= Math.PI * 2;
+                const target = telescopes[Math.floor(Math.random() * telescopes.length)];
+                pulses.push({ x: px, y: py, tx: target.cx * W, ty: target.cy * H, progress: 0,
+                    speed: 0.003 + Math.random() * 0.002, opacity: 0.40, scattered: false, scatterAngle: 0, gwDelay: gwWobble * 0.0008 });
+            }
+        });
+    }
+
+    function drawPulses() {
+        for (let i = pulses.length - 1; i >= 0; i--) {
+            const p = pulses[i];
+            p.progress += p.speed - p.gwDelay; if (p.progress < 0) p.progress = 0;
+            if (!p.scattered) {
+                clouds.forEach(c => {
+                    const cx = c.x * W, cy = c.y * H, frac0 = Math.min(p.progress, 1);
+                    const ppx = p.x + (p.tx - p.x) * frac0, ppy = p.y + (p.ty - p.y) * frac0;
+                    if (Math.hypot(ppx - cx, ppy - cy) < 80) {
+                        p.scattered = true; p.scatterAngle = (Math.random() - 0.5) * 0.18;
+                        p.speed *= 0.80; p.opacity *= 0.65;
+                    }
+                });
+            }
+            const frac = Math.min(p.progress, 1);
+            let px = p.x + (p.tx - p.x) * frac, py = p.y + (p.ty - p.y) * frac;
+            if (p.scattered) {
+                const pX = -(p.ty - p.y), pY = (p.tx - p.x), pL = Math.hypot(pX, pY) || 1;
+                px += (pX / pL) * p.scatterAngle * frac * 90; py += (pY / pL) * p.scatterAngle * frac * 90;
+            }
+            p.opacity *= 0.9985;
+            if (p.progress > 1 || p.opacity < 0.015) {
+                if (p.progress >= 1 && p.opacity > 0.04) {
+                    ctx.fillStyle = `rgba(180,200,255,${p.opacity * 0.6})`; ctx.beginPath(); ctx.arc(p.tx, p.ty, 5, 0, Math.PI * 2); ctx.fill();
+                }
+                pulses.splice(i, 1); continue;
+            }
+            for (let j = 0; j < 6; j++) {
+                const tf = Math.max(0, frac - j * 0.007);
+                let tx = p.x + (p.tx - p.x) * tf, ty = p.y + (p.ty - p.y) * tf;
+                if (p.scattered) {
+                    const pX2 = -(p.ty - p.y), pY2 = (p.tx - p.x), pL2 = Math.hypot(pX2, pY2) || 1;
+                    tx += (pX2 / pL2) * p.scatterAngle * tf * 90; ty += (pY2 / pL2) * p.scatterAngle * tf * 90;
+                }
+                const alpha = p.opacity * (1 - j / 6) * 0.55;
+                ctx.fillStyle = `rgba(180,205,255,${alpha})`; ctx.beginPath(); ctx.arc(tx, ty, 1.8 - j * 0.25, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+    }
+
+    function drawTelescopes() {
+        telescopes.forEach(tel => {
+            const tx = tel.cx * W, ty = tel.cy * H, sc = tel.scale;
+            ctx.save(); ctx.translate(tx, ty); ctx.rotate(dishAngle);
+            ctx.strokeStyle = 'rgba(170,178,195,0.40)'; ctx.lineWidth = 1.8 * sc;
+            ctx.beginPath(); ctx.moveTo(-14 * sc, -5 * sc); ctx.quadraticCurveTo(0, 10 * sc, 14 * sc, -5 * sc); ctx.stroke();
+            ctx.fillStyle = 'rgba(140,155,180,0.06)';
+            ctx.beginPath(); ctx.moveTo(-14 * sc, -5 * sc); ctx.quadraticCurveTo(0, 10 * sc, 14 * sc, -5 * sc); ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = 'rgba(150,158,175,0.25)'; ctx.lineWidth = 0.8 * sc;
+            ctx.beginPath(); ctx.moveTo(-9 * sc, -1 * sc); ctx.lineTo(0, -15 * sc); ctx.lineTo(9 * sc, -1 * sc); ctx.stroke();
+            ctx.fillStyle = 'rgba(210,190,130,0.5)'; ctx.beginPath(); ctx.arc(0, -15 * sc, 2.2 * sc, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+            ctx.save(); ctx.translate(tx, ty);
+            ctx.strokeStyle = 'rgba(140,150,170,0.30)'; ctx.lineWidth = 1.4 * sc;
+            ctx.beginPath(); ctx.moveTo(0, 2 * sc); ctx.lineTo(0, 18 * sc); ctx.stroke();
+            ctx.lineWidth = 1.0 * sc;
+            ctx.beginPath(); ctx.moveTo(-8 * sc, 18 * sc); ctx.lineTo(0, 14 * sc); ctx.lineTo(8 * sc, 18 * sc); ctx.stroke();
+            ctx.restore();
+        });
+        ctx.strokeStyle = 'rgba(100,110,130,0.12)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(W * 0.65, H * 0.96); ctx.lineTo(W, H * 0.96); ctx.stroke();
+    }
+
+    let time = 0, gwTimer = 0;
+    function animate() {
+        time++; ctx.clearRect(0, 0, W, H);
+        gwTimer++; if (gwTimer % 85 === 0) emitGWRipples();
+        drawStars(time); drawGWRipples(); drawBlackHoleSystems(time);
+        drawClouds(time); drawPulsars(time); drawPulses(); drawTelescopes();
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
 </script>
 
 </body>
