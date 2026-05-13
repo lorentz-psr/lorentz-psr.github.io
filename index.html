@@ -199,6 +199,26 @@
         }
         .about-text p { margin-bottom: 1.2rem; color: var(--text-dim); }
         .about-text p:first-of-type { color: var(--text); font-size: 1.02rem; }
+        .workshop-poster {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .workshop-poster img {
+            width: 100%;
+            max-width: 460px;
+            height: auto;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            display: block;
+        }
+        .workshop-poster a:hover img {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+            border-color: var(--accent-dim);
+        }
         .science-pillars {
             display: grid;
             gap: 1rem;
@@ -627,22 +647,10 @@
                     The workshop is particularly timely given significant upgrades to the European VLBI Network, the advent of next-generation radio facilities like the SKA and DSA-2000, and the forthcoming third data release of the International Pulsar Timing Array.
                 </p>
             </div>
-            <div class="science-pillars">
-                <div class="pillar">
-                    <div class="pillar-icon">&#x1F30C;</div>
-                    <h3>Gravitational Wave Astrophysics</h3>
-                    <p>Characterising the nanohertz GW background from supermassive black hole binaries using Pulsar Timing Arrays. Understanding the signal's spectrum and spatial correlations to constrain SMBHB populations.</p>
-                </div>
-                <div class="pillar">
-                    <div class="pillar-icon">&#x1F300;</div>
-                    <h3>Interstellar Medium</h3>
-                    <p>Modelling time-variable dispersion, scattering, and scintillation. Integrating ISM measurements into timing models and developing robust correction techniques for next-generation PTA datasets.</p>
-                </div>
-                <div class="pillar">
-                    <div class="pillar-icon">&#x1F4E1;</div>
-                    <h3>VLBI Astrometry</h3>
-                    <p>Precision parallax-based pulsar distances using VLBI. Identifying and mitigating systematic errors from ionospheric and ISM propagation effects to achieve sub-parsec distance determinations.</p>
-                </div>
+            <div class="workshop-poster">
+                <a href="photos/workshop-poster.png" target="_blank" title="Open full-size poster">
+                    <img src="photos/workshop-poster.png" alt="Advancing Pulsar Science in the Era of Modern Interferometers — workshop poster">
+                </a>
             </div>
         </div>
     </div>
