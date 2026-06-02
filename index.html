@@ -586,6 +586,144 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* ── Photo Strip (Workshop Highlights) ── */
+        .photo-strip {
+            background: var(--bg-primary);
+            padding: 3.5rem 0 3.5rem;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        .photo-strip-header {
+            max-width: var(--max-w);
+            margin: 0 auto 1.8rem;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        .photo-strip-header .section-label { margin-bottom: 0.4rem; }
+        .photo-strip-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.4rem;
+        }
+        .photo-strip-header p {
+            color: var(--text-dim);
+            font-size: 0.92rem;
+        }
+        .marquee {
+            position: relative;
+            width: 100%;
+        }
+        .marquee-viewport {
+            position: relative;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: auto;
+            -webkit-overflow-scrolling: touch;
+            mask-image: linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
+            -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 5%, #000 95%, transparent 100%);
+            cursor: grab;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .marquee-viewport::-webkit-scrollbar { display: none; }
+        .marquee-viewport.dragging { cursor: grabbing; }
+        .marquee-track {
+            display: flex;
+            gap: 1rem;
+            width: max-content;
+            padding: 0.4rem 2rem;
+        }
+        .marquee-item {
+            flex: 0 0 auto;
+            width: 320px;
+            height: 220px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+            position: relative;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .marquee-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-dim);
+            box-shadow: 0 14px 32px rgba(0,0,0,0.5);
+        }
+        .marquee-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s ease;
+            pointer-events: none;
+            -webkit-user-drag: none;
+            user-select: none;
+        }
+        .marquee-item:hover img { transform: scale(1.05); }
+        .marquee-caption {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            padding: 0.6rem 0.9rem;
+            background: linear-gradient(transparent, rgba(6,9,15,0.85));
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .marquee-item:hover .marquee-caption {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Arrow controls */
+        .marquee-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(11,17,32,0.78);
+            border: 1px solid var(--border);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s, opacity 0.2s;
+        }
+        .marquee-btn:hover {
+            background: var(--accent);
+            color: var(--bg-deep);
+            border-color: var(--accent);
+            transform: translateY(-50%) scale(1.06);
+        }
+        .marquee-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+        .marquee-btn svg { width: 20px; height: 20px; }
+        .marquee-btn.prev { left: 0.6rem; }
+        .marquee-btn.next { right: 0.6rem; }
+        @media (prefers-reduced-motion: reduce) {
+            .marquee-viewport { scroll-behavior: auto; }
+        }
+        @media (max-width: 768px) {
+            .marquee-item { width: 240px; height: 170px; }
+            .marquee-btn { width: 38px; height: 38px; }
+            .marquee-btn.prev { left: 0.3rem; }
+            .marquee-btn.next { right: 0.3rem; }
+        }
     </style>
 </head>
 <body>
@@ -628,6 +766,28 @@
 
     </div>
 </header>
+
+<!-- ═══════ Photo Strip (Workshop Highlights) ═══════ -->
+<section class="photo-strip" aria-label="Workshop highlights">
+    <div class="photo-strip-header">
+        <p class="section-label">Workshop Highlights</p>
+        <h2>Five Days · Three Communities · One Conversation</h2>
+        <p>Keynotes, tutorials, breakouts &amp; the conference dinner — a glimpse of the week.</p>
+    </div>
+    <div class="marquee">
+        <button class="marquee-btn prev" id="marquee-prev" type="button" aria-label="Scroll photos left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="marquee-viewport" id="marquee-viewport" tabindex="0" aria-label="Workshop photos, scroll horizontally">
+            <div class="marquee-track" id="marquee-track">
+                <!-- Photos populated by JS for a seamless loop -->
+            </div>
+        </div>
+        <button class="marquee-btn next" id="marquee-next" type="button" aria-label="Scroll photos right">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+    </div>
+</section>
 
 <!-- ═══════ About / Science ═══════ -->
 <section id="about">
@@ -1636,6 +1796,160 @@ window.addEventListener('scroll', () => {
         requestAnimationFrame(animate);
     }
     animate();
+})();
+</script>
+
+<!-- ═══════ Photo Strip (Workshop Highlights) ═══════ -->
+<script>
+(function(){
+    const photos = [
+        { src: "photos/conferencephoto.jpg",        caption: "Group photo · Lorentz Center, Leiden" },
+        { src: "photos/keith_pta_keynote.jpg",      caption: "PTA / GW keynote — Michael Keith" },
+        { src: "photos/ocker_ism_keynote.jpg",      caption: "ISM keynote — Stella Ocker" },
+        { src: "photos/main_ism_keynote1.jpg",      caption: "ISM keynote audience" },
+        { src: "photos/deller_vlbi_keynote.jpg",    caption: "VLBI astrometry keynote — Adam Deller" },
+        { src: "photos/shami_vlbi_training.jpg",    caption: "VLBI tutorial — Shami Chatterjee" },
+        { src: "photos/florian_vlbi_training.jpg",  caption: "VLBI tutorial — Florian Eppel" },
+        { src: "photos/kathrin_pta_training.jpg",   caption: "PTA tutorial — Kathrin Grunthal" },
+        { src: "photos/ac_pta_training.jpg",        caption: "PTA tutorial — Aurelien Chalumeau" },
+        { src: "photos/nina_ism_training.jpg",      caption: "ISM tutorial — Nina Gusinskaia" },
+        { src: "photos/reardon.jpg",                caption: "PTA foregrounds — Daniel Reardon" },
+        { src: "photos/niccolo.jpg",                caption: "Continuous waves — sub-pc SMBH binary" },
+        { src: "photos/andreas_vlbi_keynote1.jpg",  caption: "Scintillometry & high-resolution astrometry" },
+        { src: "photos/ashley_vlbi_keynote2.jpg",   caption: "VLBI of scintillation screens" },
+        { src: "photos/silke_vlbi_keynote2.jpg",    caption: "VLBI frontiers — galactic plane & SMBHs" },
+        { src: "photos/moderators_pta.jpg",         caption: "PTA moderators steering breakouts" },
+        { src: "photos/breakoutsessions1.jpg",      caption: "Breakout sessions — brainstorm to action" },
+        { src: "photos/breakoutsessions2.jpg",      caption: "Cross-disciplinary dialogue in teams" },
+        { src: "photos/blackboard.jpg",             caption: "Ideas tracked live" },
+        { src: "photos/breakout_pitches1.jpg",      caption: "Team pitches — three-minute reporting" },
+        { src: "photos/breakoutpitches2.jpg",       caption: "Plenary pitches & synthesis" },
+        { src: "photos/willem_cs_talk.jpg",         caption: "Plenary discussion" },
+        { src: "photos/dinner.jpg",                 caption: "Conference dinner · Wednesday evening" },
+        { src: "photos/dinner2.jpg",                caption: "Conference dinner · around the table" },
+        { src: "photos/dinner3.jpg",                caption: "Conference dinner · toasts & conversation" },
+        { src: "photos/dinner4.jpg",                caption: "Conference dinner · cheers" },
+        { src: "photos/dinner5.jpg",                caption: "Conference dinner · the long evening" },
+        { src: "photos/organisers.jpg",             caption: "The organising team" }
+    ];
+
+    const track    = document.getElementById('marquee-track');
+    const viewport = document.getElementById('marquee-viewport');
+    const btnPrev  = document.getElementById('marquee-prev');
+    const btnNext  = document.getElementById('marquee-next');
+    if (!track || !viewport) return;
+
+    const makeCard = (p) => {
+        const a = document.createElement('a');
+        a.className = 'marquee-item';
+        a.href = p.src;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.setAttribute('aria-label', p.caption);
+        a.draggable = false;
+        a.innerHTML = `<img src="${p.src}" alt="${p.caption.replace(/"/g,'&quot;')}" loading="lazy" draggable="false">` +
+                      `<div class="marquee-caption">${p.caption}</div>`;
+        return a;
+    };
+    // Render twice for a seamless wrap-around
+    photos.forEach(p => track.appendChild(makeCard(p)));
+    photos.forEach(p => track.appendChild(makeCard(p)));
+
+    // Half-track width is one full set of cards; we wrap when scrollLeft crosses it.
+    let halfWidth = 0;
+    const measure = () => { halfWidth = track.scrollWidth / 2; };
+    measure();
+    window.addEventListener('resize', measure);
+    // Re-measure once images have settled
+    window.addEventListener('load', measure);
+    // Re-measure as each image loads (the first few set the layout)
+    track.querySelectorAll('img').forEach(img => {
+        if (img.complete) return;
+        img.addEventListener('load', measure, { once: true });
+    });
+
+    // ── Auto-scroll: always runs; manual interactions briefly override ──
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const SPEED_PX_PER_SEC = 110;         // brisk auto-scroll
+    let lastT = performance.now();
+    let dragging = false;                  // hard pause while dragging
+    let pauseUntil = 0;                    // soft pause window after a user action
+    const pauseFor = (ms) => { pauseUntil = Math.max(pauseUntil, performance.now() + ms); };
+
+    const wrap = () => {
+        if (halfWidth <= 0) return;
+        if (viewport.scrollLeft >= halfWidth) {
+            viewport.scrollLeft -= halfWidth;
+        } else if (viewport.scrollLeft <= 0) {
+            viewport.scrollLeft += halfWidth;
+        }
+    };
+
+    function tick(now) {
+        const dt = Math.min((now - lastT) / 1000, 0.05); // clamp big gaps (tab inactive)
+        lastT = now;
+        const autoOn = !reduceMotion && !dragging && now > pauseUntil && halfWidth > 0;
+        if (autoOn) {
+            viewport.scrollLeft += SPEED_PX_PER_SEC * dt;
+        }
+        wrap();
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame((t) => { lastT = t; requestAnimationFrame(tick); });
+
+    // Arrow-button scroll (advance by one card)
+    const cardStep = () => {
+        const first = track.querySelector('.marquee-item');
+        const gap = 16; // matches CSS gap: 1rem
+        return (first ? first.getBoundingClientRect().width : 320) + gap;
+    };
+    const scrollByStep = (dir) => {
+        pauseFor(1500);
+        viewport.scrollBy({ left: dir * cardStep(), behavior: 'smooth' });
+    };
+    btnPrev && btnPrev.addEventListener('click', () => scrollByStep(-1));
+    btnNext && btnNext.addEventListener('click', () => scrollByStep(+1));
+
+    // Keyboard arrows when the strip is focused
+    viewport.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); scrollByStep(-1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); scrollByStep(+1); }
+    });
+
+    // Brief soft-pause for wheel and touch so the user's gesture isn't fought
+    viewport.addEventListener('wheel',      () => pauseFor(1200), { passive: true });
+    viewport.addEventListener('touchstart', () => pauseFor(2500), { passive: true });
+
+    // ── Click-and-drag to scroll (desktop) ──
+    let startX = 0, startScroll = 0, moved = 0;
+    viewport.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        dragging = true;
+        moved = 0;
+        startX = e.clientX;
+        startScroll = viewport.scrollLeft;
+        viewport.classList.add('dragging');
+        viewport.setPointerCapture(e.pointerId);
+    });
+    viewport.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - startX;
+        moved = Math.max(moved, Math.abs(dx));
+        viewport.scrollLeft = startScroll - dx;
+    });
+    const endDrag = (e) => {
+        if (!dragging) return;
+        dragging = false;
+        viewport.classList.remove('dragging');
+        pauseFor(1500); // brief breather after a drag, then auto resumes
+        try { viewport.releasePointerCapture(e.pointerId); } catch (_) {}
+    };
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+    // Swallow the click that follows a drag so the lightbox doesn't fire
+    viewport.addEventListener('click', (e) => {
+        if (moved > 6) { e.preventDefault(); e.stopPropagation(); moved = 0; }
+    }, true);
 })();
 </script>
 
